@@ -6,8 +6,8 @@
 CPP = gcc
 CPPFLAGS = -Wall -g -Werror
 
-GOL: GOL.cpp
-	$(CPP) $(CPPFLAGS) -o GOL GOL.cpp -lncurses
+GOL: conway.cpp
+	$(CPP) $(CPPFLAGS) -o conway conway.cpp -lncurses
 
 clean:
-	-rm -f GOL
+	-rm -f conway
