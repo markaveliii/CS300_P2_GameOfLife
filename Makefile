@@ -3,7 +3,7 @@
 #Game of Life
 #Makefile
 
-CPP = gcc
+CPP = g++
 CPPFLAGS = -Wall -g -Werror
 
 GOL: conway.cpp
