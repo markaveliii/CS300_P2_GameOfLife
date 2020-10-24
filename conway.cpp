@@ -12,6 +12,7 @@ void fill_arr(vector<vector<int>> &);
 int pausescrn(vector<vector<int>> &, int &, int &, int &);
 int printscrn(vector<vector<int>> &);
 int countadj(vector<vector<int>>, int, int);
+void updatemtrx(vector<vector<int>> &);
 
 int main(void)
 {
@@ -20,14 +21,20 @@ int main(void)
     cbreak();
     nodelay(stdscr, TRUE);
     keypad(stdscr, TRUE);
-    int curr_x = start_x;
-    int curr_y = start_y;
+    int curr_x = 0;
+    int curr_y = 0;
     vector<vector<int>> array;
     int key;
 
     fill_arr(array); 
     key = getch();
     pausescrn(array, key, curr_x, curr_y);
+    do{
+    updatemtrx(array);
+    printscrn(array);
+    wrefresh(stdscr);
+    }while(getch() != (char)'q');
+
     endwin();
 
     return 0;
@@ -104,4 +111,47 @@ int printscrn(vector<vector<int>> &array)
     return 0;
 }
 
+int countadj(vector<vector<int>> array, int y, int x)
+{
+    int sum = 0;
+    if(array[y-1][x] == 1)
+        sum++;
+    if(array[y-1][x-1] == 1)
+        sum++;
+    if(array[y-1][x+1] == 1)
+        sum++;
+    if(array[y][x+1] == 1)
+        sum++; 
+    if(array[y][x-1] == 1)
+        sum++;
+    if(array[y+1][x+1] == 1)
+        sum++;
+    if(array[y+1][x] == 1)
+        sum++;
+    if(array[y+1][x-1] == 1)
+        sum++;
 
+    return sum;
+}
+
+void updatemtrx(vector<vector<int>> &array)
+{
+    for(int i = 0; i < LINES-1; i++)
+    {
+        for(int j = 0; j < COLS-1; j++)
+        {
+            int n;
+            if(i == 0 || i == COLS-1 || j == 0 || j == LINES-1)
+                n = 0;
+            else
+                n = countadj(array, i, j);
+            if(n < 2)
+                array[i][j] = 0;
+            if(n > 3)
+                array[i][j] = 0;
+            if(n == 3)
+                array[i][j] = 1;
+        }
+
+    }
+}
