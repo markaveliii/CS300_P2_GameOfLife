@@ -1,7 +1,7 @@
 #include <vector>
 #include <iostream>
 #include <curses.h>
-#define DEAD " ";
+#define DEAD " "
 #define ALIVE "X"
 using namespace std;
 
@@ -10,8 +10,8 @@ const int start_y = LINES/2;
 
 void fill_arr(vector<vector<int>> &);
 int pausescrn(vector<vector<int>> &, int &, int &, int &);
-int printscrn(vector<vector<int>> &, int, int);
-
+int printscrn(vector<vector<int>> &);
+int countadj(vector<vector<int>>, int, int);
 
 int main(void)
 {
@@ -20,8 +20,8 @@ int main(void)
     cbreak();
     nodelay(stdscr, TRUE);
     keypad(stdscr, TRUE);
-    int curr_x = 0;
-    int curr_y = 0;
+    int curr_x = start_x;
+    int curr_y = start_y;
     vector<vector<int>> array;
     int key;
 
@@ -80,24 +80,27 @@ int pausescrn(vector<vector<int>> &array, int &key, int &curr_x, int &curr_y)
             break;
         }
 
-    flushinp();
-    printscrn(array, curr_y, curr_x);
+    printscrn(array);
     key = mvgetch(curr_y, curr_x);
     }while(key != (int)'p');
 
     return key;
 }
 
-int printscrn(vector<vector<int>> &array, int c, int r)
+int printscrn(vector<vector<int>> &array)
 {
     for(int i = 0; i < LINES; i++)
     {
         for(int j = 0; j < COLS; j++)
         {
             if(array[i][j] == 1)
-                printw("X");
+                mvprintw(i , j, ALIVE);
+            else
+                mvprintw(i ,j , DEAD);
         }
     }
+
+    wrefresh(stdscr);
     return 0;
 }
 
