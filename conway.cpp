@@ -18,7 +18,7 @@ int countadj(vector<vector<struct cell>>, int, int);
 void updatemtrx(vector<vector<struct cell>> &);
 int playscrn(vector<vector<struct cell>> &);
 int set_nCount(vector<vector<struct cell>> &);
-
+int update_nCount(vector<vector<struct cell>> &, int, int, int);
 
 
 
@@ -119,10 +119,9 @@ int pausescrn(vector<vector<struct cell>> &array, int &key, int &curr_x, int &cu
 
             case (int)'n':
             updatemtrx(array);
-            return 0;
             break;
         }
-    wrefresh(stdscr);
+
     printscrn(array);
     key = mvgetch(curr_y, curr_x);
     }while(key != (int)'p' && key != (int)'q');
@@ -143,7 +142,6 @@ int printscrn(vector<vector<struct cell>> &array)
         }
     }
 
-    wrefresh(stdscr);
     return 0;
 }
 
@@ -173,7 +171,8 @@ int countadj(vector<vector<struct cell>> array, int y, int x)
 
 void updatemtrx(vector<vector<struct cell>> &array)
 {
-    set_nCount(array);
+    vector<vector<struct cell>> new_gen;
+
     for(int i = 0; i < LINES; i++)
     {
         for(int j = 0; j < COLS; j++)
@@ -182,14 +181,16 @@ void updatemtrx(vector<vector<struct cell>> &array)
                 array[i][j].state = 0;
             else
             {
-            if(array[i][j].state == 0 && array[i][j].nCount == 3)
-                array[i][j].state = 1;
-            else if(array[i][j].state == 1 && (array[i][j].nCount < 2 || array[i][j].nCount > 3))
-                array[i][j].state = 0;
+                int n = countadj(array, i, j);
+                if(array[i][j].state == 0 && n == 3)
+                    new_gen[i][j].state = 1;
+                else if(array[i][j].state == 1 && (n < 2 || n > 3))
+                    new_gen[i][j].state = 0;
             }
         }
 
     }
+    array = new_gen;
 }
 
 int playscrn(vector<vector<struct cell>> &array)
@@ -198,23 +199,9 @@ int playscrn(vector<vector<struct cell>> &array)
     do{
        updatemtrx(array);
        printscrn(array);
-       wrefresh(stdscr);
        key = getch();
     }while(key != (int)'p' && key != (int)'q');
     return key;
 }
 
-int set_nCount(vector<vector<struct cell>> &array)
-{
-    for(int i = 0; i < LINES; i++)
-    {
-        for(int j = 0; j < COLS; j++)
-        {
-            if(i == 0 || i == LINES-1 || j == 0 || j == COLS-1)
-                array[i][j].nCount = 0;
-            else
-                array[i][j].nCount = countadj(array, i, j);
-        }
-    }
-    return 0;
-}
+
