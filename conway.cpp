@@ -1,8 +1,10 @@
+#include <thread>
+#include <chrono>
 #include <vector>
 #include <iostream>
 #include <curses.h>
 #define DEAD " "
-#define ALIVE "X"
+#define ALIVE "O"
 #define QUIT (int)'q'
 using namespace std;
 
@@ -120,23 +122,6 @@ int printscrn(vector<vector<int>> &array)
 int countadj(vector<vector<int>> array, int y, int x)
 {
     int sum = 0;
-/*    if(array[y-1][x] == 1)
-        sum++;
-    if(array[y-1][x-1] == 1)
-        sum++;
-    if(array[y-1][x+1] == 1)
-        sum++;
-    if(array[y][x+1] == 1)
-        sum++; 
-    if(array[y][x-1] == 1)
-        sum++;
-    if(array[y+1][x+1] == 1)
-        sum++;
-    if(array[y+1][x] == 1)
-        sum++;
-    if(array[y+1][x-1] == 1)
-        sum++;
-*/
     for(int i = -1; i < 2; i++)
     {
         for(int j = -1; j < 2; j++)
@@ -179,6 +164,8 @@ int playscrn(vector<vector<int>> &array)
     int key;
     do{
        updatemtrx(array);
+       int seconds = 1000 * 0.5;
+       this_thread::sleep_for(chrono::milliseconds(seconds));
        printscrn(array);
        key = getch();
     }while(key != (int)'p' && key != (int)'q');
