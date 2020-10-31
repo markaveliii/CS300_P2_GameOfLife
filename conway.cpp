@@ -1,16 +1,21 @@
+//INCLUDES AND DEFINES
 #include <thread>
 #include <chrono>
 #include <vector>
 #include <iostream>
 #include <curses.h>
 #define DEAD " "
-#define ALIVE "O"
+#define ALIVE "X"
 #define QUIT (int)'q'
+#define PAUSEorPLAY (int) 'p'
+#define NEXT (int)'n'
+
+const float FPS_RATE = 0.5;
+
 using namespace std;
 
-const int start_x = COLS/2;
-const int start_y = LINES/2;
 
+//PROTOTYPES
 void fill_arr(vector<vector<int>> &);
 int pausescrn(vector<vector<int>> &, int &, int &, int &);
 int printscrn(vector<vector<int>> &);
@@ -18,6 +23,8 @@ int countadj(vector<vector<int>>, int, int);
 void updatemtrx(vector<vector<int>> &);
 int playscrn(vector<vector<int>> &);
 
+
+//MAIN FUNCTION
 int main(void)
 {
     initscr();
@@ -35,15 +42,17 @@ int main(void)
 
     do{
         key = pausescrn(array, key, curr_x, curr_y);
-        if(key == (int)'p')
+        if(key == PAUSEorPLAY)
             key = playscrn(array);
-    }while(key != QUIT);
+    }while(key != QUIT && key == PAUSEorPLAY);
 
     endwin();
 
     return 0;
 }
 
+
+//FUNCTION DEFINITIONS
 void fill_arr(vector<vector<int>> &array)
 {
     for(int i = 0; i < LINES; i++)
@@ -58,6 +67,9 @@ void fill_arr(vector<vector<int>> &array)
 
 int pausescrn(vector<vector<int>> &array, int &key, int &curr_x, int &curr_y)
 {
+    nodelay(stdscr, FALSE);
+
+    //KEYSTROKE OPTIONS
     do
     {
         switch(key)
@@ -90,18 +102,19 @@ int pausescrn(vector<vector<int>> &array, int &key, int &curr_x, int &curr_y)
             key = 0;
             break;
 
-            case (int)'n':
+            case NEXT:
             updatemtrx(array);
             break;
         }
 
     printscrn(array);
     key = mvgetch(curr_y, curr_x);
-    }while(key != (int)'p' && key != QUIT);
-
+    curs_set(1);
+    }while(key != PAUSEorPLAY && key != QUIT);
     return key;
 }
 
+//PRINT EVERY LINE ITERITIVELY.
 int printscrn(vector<vector<int>> &array)
 {
     for(int i = 0; i < LINES; i++)
@@ -115,10 +128,10 @@ int printscrn(vector<vector<int>> &array)
         }
     }
 
-    wrefresh(stdscr);
     return 0;
 }
 
+//COUNTS ADJACENT LIVE NEIGHBORS
 int countadj(vector<vector<int>> array, int y, int x)
 {
     int sum = 0;
@@ -133,6 +146,7 @@ int countadj(vector<vector<int>> array, int y, int x)
 
 void updatemtrx(vector<vector<int>> &array)
 {
+    curs_set(0);
     vector<vector<int>> newgen;
     for(int i = 0; i < LINES; i++)
     {
@@ -145,6 +159,8 @@ void updatemtrx(vector<vector<int>> &array)
             else
             {
                 n = countadj(array, i, j);
+
+                //CONWAY GAME OF LIFE RULEZZZ
                 if(array[i][j] == 0 && n == 3)
                     temp.push_back(1);
                 else if(array[i][j] == 1 && (n > 3 ||n < 2) )
@@ -161,14 +177,18 @@ void updatemtrx(vector<vector<int>> &array)
 
 int playscrn(vector<vector<int>> &array)
 {
+    nodelay(stdscr, TRUE);
     int key;
     do{
-       updatemtrx(array);
-       int seconds = 1000 * 0.5;
-       this_thread::sleep_for(chrono::milliseconds(seconds));
-       printscrn(array);
-       key = getch();
-    }while(key != (int)'p' && key != (int)'q');
+        curs_set(0);
+        updatemtrx(array);
+        //CALCULATES AND DELAYS SCREEN FRAMES
+        int seconds = 1000 * FPS_RATE;
+        this_thread::sleep_for(chrono::milliseconds(seconds));
+        printscrn(array);
+        key = getch();
+
+    }while(key != PAUSEorPLAY && key != QUIT);
     return key;
 }
 
