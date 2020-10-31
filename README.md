@@ -16,11 +16,15 @@ In each iteration, or generation of the grid, each cells state DIES or SURVIVES 
 
 ## How to Play
 This program can toggle between different game state:
--Pause
--Play
--Next Generation
--Quit
+- Pause
+- Play
+- Next Generation
+- Quit
 
-To pause or play push **p**
-To display the next generation push **n**
-To quit the game push **q**
+To pause or play push **p** <br />
+To display the next generation push **n** <br />
+To quit the game push **q** <br />
+
+## Bibliography
+Resources used are from the following:
+- [The Coding Train YouTube Channel] (https://www.youtube.com/watch?v=FWSR_7kZuYg)
