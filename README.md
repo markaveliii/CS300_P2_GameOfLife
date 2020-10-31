@@ -25,6 +25,13 @@ To pause or play push **p** <br />
 To display the next generation push **n** <br />
 To quit the game push **q** <br />
 
+## Conclusion
+The game functions as expected. The project utilizes many for loops which isn't very efficient and is very linear. <br />
+What the game still needs:
+- Optimizations
+- Utilization of return values
+- Use of dynamic programming to avoid linear performance
+
 ## Bibliography
 Resources used are from the following:
-- [The Coding Train YouTube Channel] (https://www.youtube.com/watch?v=FWSR_7kZuYg)
+- Some ideas and code were taken from [The Coding Train YouTube Channel](https://www.youtube.com/watch?v=FWSR_7kZuYg)
